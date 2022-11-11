@@ -24,7 +24,7 @@ jobs:
       - name: Convert PEM to JWK
         run: |
           gem install --user-install json-jwt
-          export TF_VAR_okta_jwk_n=`ruby scripts/jwk.rb`
+          export TF_VAR_okta_jwk_n=`ruby scripts/idt-okta-jwk.rb`
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -116,7 +116,7 @@ jobs:
         run: |
           export TF_VAR_remote_bucket_name=${TF_CLI_ARGS:17:-1}
           gem install --user-install json-jwt
-          export TF_VAR_okta_jwk_n=`ruby scripts/jwk.rb`
+          export TF_VAR_okta_jwk_n=`ruby scripts/idt-okta-jwk.rb`
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
