@@ -21,10 +21,6 @@ jobs:
         uses: hashicorp/setup-terraform@v1
       - name: Validate secrets
         run: 'echo "TODO: skip run if secrets are invalid"'
-      - name: Convert PEM to JWK
-        run: |
-          gem install --user-install json-jwt
-          export TF_VAR_okta_jwk_n=`ruby scripts/idt-okta-jwk.rb`
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -45,6 +41,10 @@ jobs:
         env:
           TF_CLI_ARGS: ${{ secrets.TF_CLI_ARGS }}
         run: terraform init
+      - name: Run post-init scripts
+        run: |
+          gem install --user-install json-jwt
+          run-parts ../scripts/post-init
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
@@ -110,13 +110,12 @@ jobs:
         uses: actions/checkout@v2
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
-      - name: Setup Terraform config
+      - name: Run pre-init setup
         env:
           TF_CLI_ARGS: ${{ secrets.TF_CLI_ARGS }}
         run: |
           export TF_VAR_remote_bucket_name=${TF_CLI_ARGS:17:-1}
           gem install --user-install json-jwt
-          export TF_VAR_okta_jwk_n=`ruby scripts/idt-okta-jwk.rb`
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -137,6 +136,10 @@ jobs:
         env:
           TF_CLI_ARGS: ${{ secrets.TF_CLI_ARGS }}
         run: terraform init
+      - name: Run post-init scripts
+        run: |
+          gem install --user-install json-jwt
+          run-parts ../scripts/post-init
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'

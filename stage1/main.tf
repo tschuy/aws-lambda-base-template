@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-data "terraform_remote_state" "stage1" {
+data "terraform_remote_state" "stage0" {
   backend = "s3"
 
   # var configured in CI
